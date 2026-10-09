@@ -1,0 +1,7 @@
+asset_id,asset_name,asset_type,sector,market_value
+A001,Technology Equity,Equity,Technology,250000
+A002,Banking Equity,Equity,Financials,200000
+A003,Corporate Bond,Bond,Technology,150000
+A004,Bank Loan,Loan,Financials,250000
+A005,Government Bond,Bond,Sovereign,200000
+A006,Interest Rate Swap,Derivative,Financials,100000
