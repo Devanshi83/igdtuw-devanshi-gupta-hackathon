@@ -1,0 +1,14 @@
+[
+  {
+    "id": "NEWS-001",
+    "source": "synthetic_news",
+    "company": "Example Technology Ltd",
+    "text": "Example Technology Ltd reported a cybersecurity breach that may disrupt operations and trigger regulatory scrutiny."
+  },
+  {
+    "id": "NEWS-002",
+    "source": "synthetic_news",
+    "company": "Example Bank Ltd",
+    "text": "Example Bank Ltd reported a major debt default and liquidity concerns."
+  }
+]

@@ -1,0 +1,14 @@
+[
+  {
+    "id": "SOCIAL-001",
+    "source": "synthetic_social",
+    "company": "Example Bank Ltd",
+    "text": "Investors are concerned about the bank's liquidity and possible deposit outflows."
+  },
+  {
+    "id": "SOCIAL-002",
+    "source": "synthetic_social",
+    "company": "Example Technology Ltd",
+    "text": "Example Technology Ltd announced strong profit growth and record revenue."
+  }
+]
