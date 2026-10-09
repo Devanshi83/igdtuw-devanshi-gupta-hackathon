@@ -50,19 +50,19 @@ def stress_portfolio(portfolio, event, impact, target_company=None):
 
     result = portfolio.copy()
 
-    if scope == "issuer" and target_company:
+    if scope == "issuer":
+        if not isinstance(target_company, str) or not target_company.strip():
+            raise ValueError(
+                "Issuer-scoped scenarios require a target company"
+            )
         if "issuer" not in result.columns:
             raise ValueError(
                 "Issuer-scoped scenarios require an issuer column"
             )
         result["affected"] = (
-            result["issuer"].astype(str).str.casefold()
+            result["issuer"].astype(str).str.strip().str.casefold()
             == target_company.strip().casefold()
         )
-    elif scope == "issuer":
-        # Without a target, retain portfolio-wide behavior for generic
-        # calculations and backward-compatible unit tests.
-        result["affected"] = True
     elif scope == "systemic":
         result["affected"] = True
     else:

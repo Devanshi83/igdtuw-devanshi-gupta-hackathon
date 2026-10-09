@@ -50,28 +50,32 @@ def test_impact_must_be_between_one_and_ten():
 def test_credit_stress_calculates_expected_values():
     portfolio = pd.DataFrame({
         "asset_type": ["Equity", "Bond", "Loan", "Derivative"],
+        "issuer": ["Test Issuer"] * 4,
         "market_value": [1000.0, 1000.0, 1000.0, 1000.0],
     })
 
-    result = stress_portfolio(portfolio, "Credit Event", 10)
+    result = stress_portfolio(
+        portfolio, "Credit Event", 10, target_company="Test Issuer"
+    )
 
     assert result["value_after"].tolist() == [
         880.0, 900.0, 850.0, 920.0
     ]
     assert result["pnl"].sum() == pytest.approx(-450.0)
 
-
 def test_original_portfolio_is_not_mutated():
     portfolio = pd.DataFrame({
         "asset_type": ["Equity"],
+        "issuer": ["Test Issuer"],
         "market_value": [1000.0],
     })
     original = portfolio.copy(deep=True)
 
-    stress_portfolio(portfolio, "Credit Event", 10)
+    stress_portfolio(
+        portfolio, "Credit Event", 10, target_company="Test Issuer"
+    )
 
     pd.testing.assert_frame_equal(portfolio, original)
-
 
 def test_unknown_event_is_rejected():
     portfolio = pd.DataFrame({
@@ -122,3 +126,14 @@ def test_issuer_matching_is_case_insensitive():
 
     assert result.loc[0, "affected"]
     assert result.loc[0, "value_after"] == 880.0
+
+
+def test_issuer_event_requires_target_company():
+    portfolio = pd.DataFrame({
+        "asset_type": ["Equity"],
+        "issuer": ["Example Bank Ltd"],
+        "market_value": [1000.0],
+    })
+
+    with pytest.raises(ValueError, match="target company"):
+        stress_portfolio(portfolio, "Credit Event", 10)
