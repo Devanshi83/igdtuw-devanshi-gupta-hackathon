@@ -1,52 +1,86 @@
-SHOCKS = {
-    "Geopolitical": {
-        "Equity": -0.10, "Bond": -0.03,
-        "Loan": -0.05, "Derivative": -0.04,
-    },
-    "Macroeconomic": {
-        "Equity": -0.08, "Bond": -0.04,
-        "Loan": -0.06, "Derivative": -0.05,
-    },
-    "Credit Event": {
-        "Equity": -0.12, "Bond": -0.10,
-        "Loan": -0.15, "Derivative": -0.08,
-    },
-    "Merger/Acquisition": {
-        "Equity": 0.02, "Bond": 0.0,
-        "Loan": 0.0, "Derivative": 0.0,
-    },
-    "Product/Cyber Event": {
-        "Equity": -0.08, "Bond": -0.03,
-        "Loan": -0.04, "Derivative": -0.02,
-    },
-    "Other": {
-        "Equity": -0.02, "Bond": -0.01,
-        "Loan": -0.01, "Derivative": -0.01,
-    },
-}
+import json
+from pathlib import Path
+
+import pandas as pd
+
+SCENARIO_PATH = (
+    Path(__file__).resolve().parents[2] / "data" / "scenarios.json"
+)
 
 
-def stress_portfolio(portfolio, event, impact):
-    """Apply an illustrative event shock; not a calibrated loss forecast."""
-    if event not in SHOCKS:
-        raise ValueError(f"Unsupported event category: {event}")
-    if not isinstance(impact, (int, float)) or not 1 <= impact <= 10:
+def load_scenarios():
+    with SCENARIO_PATH.open(encoding="utf-8") as file:
+        scenarios = json.load(file)
+
+    if not isinstance(scenarios, dict) or not scenarios:
+        raise ValueError("Scenario configuration must be a non-empty object")
+
+    return scenarios
+
+
+def stress_portfolio(portfolio, event, impact, target_company=None):
+    """Apply documented illustrative shocks to eligible portfolio positions."""
+    if not isinstance(impact, (int, float)) or isinstance(impact, bool):
+        raise ValueError("Impact must be a number between 1 and 10")
+    if not 1 <= impact <= 10:
         raise ValueError("Impact must be between 1 and 10")
 
     required = {"asset_type", "market_value"}
     if not required.issubset(portfolio.columns):
-        raise ValueError(f"Portfolio must contain columns: {sorted(required)}")
+        raise ValueError(
+            f"Portfolio must contain columns: {sorted(required)}"
+        )
+
     if portfolio["market_value"].isna().any():
         raise ValueError("Market values cannot be missing")
+
+    if not pd.api.types.is_numeric_dtype(portfolio["market_value"]):
+        raise ValueError("Market values must be numeric")
+
     if (portfolio["market_value"] < 0).any():
         raise ValueError("Market values cannot be negative")
 
+    scenarios = load_scenarios()
+    if event not in scenarios:
+        raise ValueError(f"Unsupported event category: {event}")
+
+    scenario = scenarios[event]
+    scope = scenario["scope"]
+    shocks = scenario["shocks"]
+
     result = portfolio.copy()
-    result["shock_pct"] = (
-        result["asset_type"].map(SHOCKS[event]).fillna(0.0) * impact / 10
+
+    if scope == "issuer" and target_company:
+        if "issuer" not in result.columns:
+            raise ValueError(
+                "Issuer-scoped scenarios require an issuer column"
+            )
+        result["affected"] = (
+            result["issuer"].astype(str).str.casefold()
+            == target_company.strip().casefold()
+        )
+    elif scope == "issuer":
+        # Without a target, retain portfolio-wide behavior for generic
+        # calculations and backward-compatible unit tests.
+        result["affected"] = True
+    elif scope == "systemic":
+        result["affected"] = True
+    else:
+        raise ValueError(f"Unsupported scenario scope: {scope}")
+
+    result["base_shock_pct"] = (
+        result["asset_type"].map(shocks).fillna(0.0)
     )
+
+    result["shock_pct"] = (
+        result["base_shock_pct"]
+        * (impact / 10.0)
+        * result["affected"].astype(float)
+    )
+
     result["value_after"] = (
         result["market_value"] * (1 + result["shock_pct"])
     )
     result["pnl"] = result["value_after"] - result["market_value"]
+
     return result

@@ -67,9 +67,11 @@ if st.button("Analyze event", type="primary"):
             portfolio,
             signal["event_classification"],
             signal["impact_score"],
+            target_company=record["company"],
         )
         before = stressed["market_value"].sum()
         after = stressed["value_after"].sum()
+        affected_count = int(stressed["affected"].sum())
 
         st.subheader("Portfolio stress test")
         a, b, c = st.columns(3)
@@ -77,6 +79,10 @@ if st.button("Analyze event", type="primary"):
         b.metric("After", f"${after:,.2f}")
         c.metric("Simulated P&L", f"${after - before:,.2f}")
 
+        st.caption(
+            f"Target company: {record['company']} | "
+            f"Affected positions: {affected_count} of {len(stressed)}"
+        )
         st.dataframe(stressed, use_container_width=True, hide_index=True)
         st.bar_chart(stressed.set_index("asset_name")["pnl"])
     else:

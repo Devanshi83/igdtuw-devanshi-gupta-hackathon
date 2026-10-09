@@ -1,0 +1,56 @@
+{
+  "Geopolitical": {
+    "scope": "systemic",
+    "shocks": {
+      "Equity": -0.10,
+      "Bond": -0.03,
+      "Loan": -0.05,
+      "Derivative": -0.04
+    }
+  },
+  "Macroeconomic": {
+    "scope": "systemic",
+    "shocks": {
+      "Equity": -0.08,
+      "Bond": -0.04,
+      "Loan": -0.06,
+      "Derivative": -0.05
+    }
+  },
+  "Credit Event": {
+    "scope": "issuer",
+    "shocks": {
+      "Equity": -0.12,
+      "Bond": -0.10,
+      "Loan": -0.15,
+      "Derivative": -0.08
+    }
+  },
+  "Merger/Acquisition": {
+    "scope": "issuer",
+    "shocks": {
+      "Equity": 0.02,
+      "Bond": 0.0,
+      "Loan": 0.0,
+      "Derivative": 0.0
+    }
+  },
+  "Product/Cyber Event": {
+    "scope": "issuer",
+    "shocks": {
+      "Equity": -0.08,
+      "Bond": -0.03,
+      "Loan": -0.04,
+      "Derivative": -0.02
+    }
+  },
+  "Other": {
+    "scope": "systemic",
+    "shocks": {
+      "Equity": -0.02,
+      "Bond": -0.01,
+      "Loan": -0.01,
+      "Derivative": -0.01
+    }
+  }
+}

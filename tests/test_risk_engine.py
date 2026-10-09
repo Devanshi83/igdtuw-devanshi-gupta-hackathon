@@ -80,3 +80,45 @@ def test_unknown_event_is_rejected():
     })
     with pytest.raises(ValueError):
         stress_portfolio(portfolio, "Unknown Event", 5)
+
+
+def test_issuer_event_only_affects_target_company():
+    portfolio = pd.DataFrame({
+        "asset_type": ["Equity", "Loan", "Bond"],
+        "issuer": [
+            "Example Bank Ltd",
+            "Example Bank Ltd",
+            "Example Technology Ltd",
+        ],
+        "market_value": [1000.0, 2000.0, 1500.0],
+    })
+
+    result = stress_portfolio(
+        portfolio,
+        "Credit Event",
+        10,
+        target_company="Example Bank Ltd",
+    )
+
+    assert result["affected"].tolist() == [True, True, False]
+    assert result.loc[2, "value_after"] == 1500.0
+    assert result.loc[0, "value_after"] == 880.0
+    assert result.loc[1, "value_after"] == 1700.0
+
+
+def test_issuer_matching_is_case_insensitive():
+    portfolio = pd.DataFrame({
+        "asset_type": ["Equity"],
+        "issuer": ["Example Bank Ltd"],
+        "market_value": [1000.0],
+    })
+
+    result = stress_portfolio(
+        portfolio,
+        "Credit Event",
+        10,
+        target_company="EXAMPLE BANK LTD",
+    )
+
+    assert result.loc[0, "affected"]
+    assert result.loc[0, "value_after"] == 880.0
