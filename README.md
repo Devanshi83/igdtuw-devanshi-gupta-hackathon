@@ -130,11 +130,11 @@ The portfolio is long-only, USD and synthetic. Bonds, loans and swaps use simpli
 
 Next experiments: compare a contextual NLP model on a frozen holdout, calibrate shocks using a broader time-separated event sample, and introduce instrument-specific bond/swap sensitivities. No improvement is claimed before measurement.
 
-This is an individual submission. AI assistance supported code, tests, documentation and presentation preparation. The candidate is responsible for understanding and explaining the implementation and assumptions. No confidential S&P Global or CRISIL data is used.
+This is an individual submission. AI assistance supported code, tests, documentation and presentation preparation. Due to a temporary severe cough, demo video narration was synthesized using macOS Text-to-Speech (Tara voice) to ensure speech clarity and uninterrupted presentation. The candidate is responsible for understanding and explaining the implementation and assumptions. No confidential S&P Global or CRISIL data is used.
 
 ## 7. Submission & Project Materials
 
-- **Demo Video:** [YouTube Video Walkthrough (Unlisted)](https://youtu.be/kTi4sYZG4mY)
+- **Demo Video:** [YouTube Video Walkthrough (Unlisted)](https://youtu.be/kTi4sYZG4mY) *(Narration synthesized via macOS Text-to-Speech due to cough)*
 - **Slide Deck:** [Seven-slide PDF](docs/presentation.pdf) · [Editable PowerPoint](docs/presentation.pptx)
 - **Architecture & System Design:** [`docs/architecture.png`](docs/architecture.png)
 - **Methodology & Assumptions:** [Methodology Guide](docs/methodology.md)
