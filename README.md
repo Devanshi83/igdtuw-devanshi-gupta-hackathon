@@ -1,103 +1,143 @@
 # Signal-to-Shock — S&P Global & CRISIL Campus Hackathon 2026
 
 **Candidate Name:** Devanshi Gupta
-**College Email ID:** Pending — add your official college email before submission.
+
+**College Email ID:** devanshi034bteceai24@igdtuw.ac.in
+
 **College / Campus:** Indira Gandhi Delhi Technical University for Women (IGDTUW)
-**Demo Video Link:** Pending — add the public YouTube URL after uploading the unlisted demo.
-**Slide Deck Link:** docs/presentation.pdf
 
-## 1. Project Overview
+**Demo Video Link:** Not uploaded yet — submission remains incomplete until an accessible unlisted YouTube link is added.
 
-Signal-to-Shock is a financial event intelligence prototype that converts unstructured financial text into structured risk signals and demonstrates how major events could affect a synthetic portfolio.
+**Slide Deck Link:** [Seven-slide PDF](docs/presentation.pdf) · [Editable PowerPoint](docs/presentation.pptx)
 
-The application provides a Streamlit interface for selecting synthetic financial news or social-media text, which is then processed through the following workflow:
-- **Keyword-based sentiment analysis** (rule-based; not a trained language model).
-- **Rule-based event classification and impact scoring.**
-- **Scenario-driven portfolio stress testing** (illustrative shocks, not calibrated market forecasts).
+[![Tests](https://github.com/Devanshi83/igdtuw-devanshi-gupta-hackathon/actions/workflows/tests.yml/badge.svg)](https://github.com/Devanshi83/igdtuw-devanshi-gupta-hackathon/actions/workflows/tests.yml)
 
-The system displays the generated structured signals, before/after portfolio values, simulated P&L, and affected positions. It distinguishes between issuer-specific scenarios (which affect only positions matching the target issuer) and systemic scenarios (which affect all positions).
+## 1. Project Overview / Problem Statement & Approach
 
-## 2. Architecture & Implementation Details
+Financial headlines describe events; portfolio decisions require a second step: identifying which issuer and instruments are exposed. A bank default should not automatically shock an unrelated technology company. Signal-to-Shock makes that mapping visible and reproducible for an analyst reviewing financial news or social text.
 
-The project is implemented in Python and Streamlit, with modular components:
-- `app.py`: The main Streamlit interface for the application.
-- `src/nlp/analyzer.py`: Implements the keyword-based sentiment analysis and rule-based event classification.
-- `src/risk/stress.py`: Handles scenario-driven portfolio stress testing.
-- `data/scenarios.json`: Contains the definitions for base shocks and scenario scopes (issuer vs. systemic).
-- `data/`: Contains the synthetic dataset, including portfolio and sample text files.
-- `tests/test_risk_engine.py`: Unit tests for the NLP and risk engine components.
-- `.github/workflows/tests.yml`: GitHub Actions workflow for continuous integration.
+The prototype extracts sentiment and event evidence with transparent keyword rules. An analyst selects the scenario, target issuer and intensity, then runs an illustrative stress test over a synthetic portfolio. The workbench shows position-level P&L, exposure, sensitivity across intensities and alternative scenarios. Ambiguous headlines, possible negation and unsupported events require explicit review. A downloadable report includes the inputs, scenario definition, rule evidence, calculation outputs and a SHA-256 fingerprint.
 
-The architecture diagram is available at [`docs/architecture.png`](docs/architecture.png).
+The intended use is **event triage and what-if discussion**. No model has been trained. The application does not ingest live news, estimate event probabilities or predict market losses. The separate public-data experiments evaluate sentiment and describe selected historical returns; neither validates the assumed portfolio shocks.
 
-### Methodology
+![Verified bank-credit scenario in the workbench](docs/workbench.png)
 
-- **Sentiment Calculation**: The sentiment score is calculated using the formula `(positive_count - negative_count) / (positive_count + negative_count)`. **Note:** The analyzer is a keyword baseline, not a trained language model.
-- **Scenario-Shock Calculation**: The stressed portfolio values are calculated by applying shocks to the market value. The simulated value is calculated as: `market_value * (1 + (base_shock_pct * (impact_score / 10.0) * affected))`. **Note:** These shocks are illustrative assumptions, not calibrated market forecasts or investment advice.
+## 2. Architecture & Tech Stack
 
-## 3. Dataset
+![System design and data flow](docs/architecture.png)
 
-The project uses a fully synthetic dataset for demonstration purposes. The initial synthetic portfolio consists of six positions totaling $1,150,000 across Equity, Bond, Loan, and Derivative asset types. Additional synthetic news and social-media fixtures are located in the `data/` directory.
+- **Streamlit:** interactive analyst interface, synthetic CSV upload, charts and downloads.
+- **Python, pandas, NumPy:** deterministic scenario calculations and validation.
+- **scikit-learn:** sentiment evaluation metrics, optional for running the dashboard.
+- **pytest + Streamlit AppTest:** calculation, input-validation and UI regression tests.
+- **Optional research tools:** Hugging Face datasets and yfinance, separated from runtime dependencies.
+
+| Module | Responsibility |
+|---|---|
+| `src/nlp/analyzer.py` | Keyword sentiment, event evidence, ambiguity/negation review flags |
+| `src/risk/stress.py` | Validated issuer/systemic shocks and position-level P&L |
+| `src/reporting/report.py` | Self-contained audit report, scenario comparison, intensity sensitivity |
+| `app.py` | Analyst workbench, evidence and methodology views |
+| `scripts/reproduce.py` | Offline demo and historical-window reproduction |
+
+```text
+sentiment = (positive keyword count - negative keyword count) / total matched count
+position P&L = market value × base asset-type shock × intensity / 10 × issuer eligibility
+stressed value = market value + position P&L
+```
+
+Sentiment is zero if no sentiment keywords match. Category selection uses the first configured match, exposes all matches, and flags ambiguity. Intensity is a heuristic/user sensitivity setting, not confidence or probability. Issuers are selected by the analyst, not extracted from text. See [methodology](docs/methodology.md).
+
+## 3. Dataset Used
+
+All demo inputs are in [`data/`](data/). See [sources and assumptions](data/README.md) and [checksum manifest](data/manifest.json).
+
+- **Synthetic:** six USD positions totaling **$1,150,000**, six news examples, two social posts and six illustrative scenario definitions. No client data or real holdings.
+- **Public historical inputs:** a small cached Yahoo Finance/yfinance price sample in `data/market_data/price_cache.csv`, retained from the earlier research run. Reproduction uses the cache and makes no network request.
+- **Public sentiment evaluation:** Financial PhraseBank (`sentences_75agree`, 3,453 sentences), Malo et al., CC BY-NC-SA 3.0. The repository includes aggregate metrics and acquisition/evaluation instructions. Licensed raw sentence outputs are excluded from Git and are not needed to run the prototype. Research data retains its source terms; the code MIT license does not relicense third-party data.
 
 ## 4. Quickstart & Installation
 
-To run this project locally, ensure you have Python 3.12 installed.
+**Runtime:** Python 3.12. Fresh installation and tests verified on macOS arm64. GitHub Actions separately checks Ubuntu with Python 3.12. Internet access is needed for installation; the app and offline reproduction then run without API keys or downloads.
 
-```sh
+```bash
 git clone https://github.com/Devanshi83/igdtuw-devanshi-gupta-hackathon.git
 cd igdtuw-devanshi-gupta-hackathon
 python3.12 -m venv .venv
 source .venv/bin/activate
 python -m pip install -r requirements.txt
-streamlit run app.py
+python -m streamlit run app.py
 ```
 
-To run the test suite locally:
-```sh
+On Windows, use `py -3.12 -m venv .venv` and `.venv\Scripts\activate` for the environment steps. Open the localhost address printed by Streamlit. No database or credentials are needed.
+
+**Judge's two-minute path:** choose **NEWS-002**, leave **Credit Event / Example Bank Ltd / intensity 9**, then click **Run portfolio stress test**. Expect **−$62,550**, **3/6** shocked positions and **$1,087,450** after stress. Inspect the ledger, expand the alternative scenarios, and download the JSON audit. NEWS-005 demonstrates the negation review gate; NEWS-003 demonstrates systemic exposure.
+
+```bash
+# Tests and offline evidence
+python -m pip install -r requirements-dev.txt
 python -m pytest -q
+python scripts/reproduce.py
+python scripts/check_submission.py
+python -m pip check
+
+# Optional research evaluation (separate, network-enabled environment)
+python -m pip install -r requirements-research.txt
+python scripts/evaluation/evaluate_sentiment.py
+# Or use legally obtained local labelled input:
+# python scripts/evaluation/evaluate_sentiment.py --input-csv /path/to/labelled.csv
 ```
 
-## 5. Real-Data Evaluation
+The local labelled CSV schema is `text,true_label`, with negative/neutral/positive labels. See [evaluation notes](docs/real_data_evaluation.md) for reproducibility limits and sources.
 
-Two separate evaluations were conducted on real-world data. These evaluate the existing rule-based components without retraining or tuning.
+## 5. Key Results & Domain Impact
 
-### Sentiment Evaluation (Financial PhraseBank)
+### A traceable scenario, compared with a naive scope assumption
 
-The rule-based sentiment analyzer was evaluated on 3,453 labelled financial-news sentences from the [Financial PhraseBank](https://huggingface.co/datasets/takala/financial_phrasebank) (sentences_75agree, CC BY-NC-SA 3.0). The raw dataset is dynamically downloaded via the Hugging Face `datasets` library and is **not redistributed** in this repository.
+| Bank-credit scenario, intensity 9 | Result |
+|---|---:|
+| Synthetic portfolio before stress | $1,150,000 |
+| Eligible bank exposure | $550,000 |
+| Simulated P&L with issuer filtering | −$62,550 (−5.44%) |
+| Positions receiving non-zero shocks | 3 of 6 |
+| Same shocks applied to every issuer | −$121,050 |
+| Difference due to scope | $58,500 |
 
-- **Accuracy:** 67.30%
-- **Macro F1:** 0.4314
+This demonstrates correct application of the chosen scope, **not measured loss avoidance or forecast accuracy**. The [committed audit report](results/demo/bank_credit_audit.json) reproduces each position. A risk analyst can inspect assumptions, change intensity and share a replayable result instead of interpreting a bare sentiment score. No real productivity gain has been measured.
 
-Full methodology, per-class metrics, confusion matrix, and limitations: [`docs/real_data_evaluation.md`](docs/real_data_evaluation.md).
+### Public-data sentiment benchmark
 
-### Historical Market-Data Analysis
+| Method | Accuracy | Macro F1 |
+|---|---:|---:|
+| Always-neutral comparator | 62.15% | 0.2555 |
+| Current keyword sentiment rules | 67.33% | 0.4319 |
 
-Historical daily prices for three documented financial events were retrieved via `yfinance` and analysed with a T-1 to T+5 trading-day window against an SPY benchmark.
+Negative recall is **9.52%**. This baseline misses most negative examples and requires analyst judgment. Metrics were regenerated on 19 October 2026 from retained labelled inputs without label-driven tuning. One prediction differs from the older saved report (67.30%, 0.4314), so the current source fingerprint and figures are recorded in [metrics.json](results/real_data/metrics.json). [Full methodology and per-class results](docs/real_data_evaluation.md).
 
-| Event | Ticker | Return | SPY Return | Excess |
-|-------|--------|--------|------------|--------|
-| SVB Collapse (2023-03-09) | KRE | -19.91% | -0.70% | -19.21% |
-| Credit Suisse Crisis (2023-03-15) | XLF | -2.77% | +0.48% | -3.25% |
-| UK Mini-Budget (2022-09-23) | EWU | -5.52% | -4.55% | -0.96% |
+### Historical context
 
-These are observed historical returns, not causal proof or validation of our portfolio shock percentages. Full details: [`docs/market_data_analysis.md`](docs/market_data_analysis.md).
+| Selected event window | Proxy | T−1 to T+5 return | SPY return |
+|---|---|---:|---:|
+| SVB bank-run period, 9 Mar 2023 | KRE | −19.91% | −0.70% |
+| Credit Suisse crisis period, 15 Mar 2023 | XLF | −2.77% | +0.48% |
+| UK mini-budget, 23 Sep 2022 | EWU | −5.52% | −4.55% |
 
-## 6. Testing Status
+These are selected observations, not causal estimates. XLF represents broad US financials, not Credit Suisse equity. SPY is a broad comparator, not a matched causal control. The script rejects incomplete T+5 windows. [Sources, window definitions and limitations](docs/market_data_analysis.md).
 
-The test suite covers the NLP analyzer, risk engine, sentiment evaluation logic, and market-data return calculations. Continuous integration is configured in `.github/workflows/tests.yml`.
+## 6. Limitations, Integrity & Next Steps
 
-## 7. Limitations
+The portfolio is long-only, USD and synthetic. Bonds, loans and swaps use simplified asset-type market-value shocks; the engine has no duration, spread sensitivity, DV01, margin, liquidity or contagion model. Negation detection only flags a possible issue. The generic `Other` scenario is an explicit analyst what-if and requires review when no event is recognized. Empty text cannot trigger a run. Missing/unknown asset types are rejected. Zero P&L does not establish absence of risk.
 
-- The NLP engine relies on simple keyword matching rather than contextual language models (like LLMs or transformers).
-- The stress testing impacts and base shock percentages are purely illustrative and do not reflect real market dynamics.
-- The portfolio and input texts are synthetic and do not reflect actual financial data or events.
-- The Financial PhraseBank evaluation measures only sentiment extraction accuracy; it does not validate event classification, impact scoring, or portfolio stress assumptions.
-- Historical market returns show correlation, not causation, and do not validate the synthetic shock magnitudes.
+Next experiments: compare a contextual NLP model on a frozen holdout, calibrate shocks using a broader time-separated event sample, and introduce instrument-specific bond/swap sensitivities. No improvement is claimed before measurement.
 
-## Demo Video
+This is an individual submission. AI assistance supported code, tests, documentation and presentation preparation. The candidate is responsible for understanding and explaining the implementation and assumptions. No confidential S&P Global or CRISIL data is used.
 
-Pending — the unlisted YouTube link will be added after the recording is uploaded and verified.
+## 7. Submission & Pitch Materials
 
-## Presentation
+- [Seven-slide PDF](docs/presentation.pdf) and [editable deck](docs/presentation.pptx)
+- [Timed demo recording script](docs/demo_script.md)
+- [Jury Q&A preparation](docs/jury_qa.md)
+- [Submission checklist](docs/submission_checklist.md)
+- [Validation record](docs/validation.md)
 
-See docs/presentation.pdf when available.
+**Still required:** record and upload the demo to YouTube as Unlisted, verify playback while logged out, add its link above, confirm the deadline/original case brief, and submit the links through the official form. `python scripts/check_submission.py --strict` deliberately fails until the demo URL is present. Local checks cannot certify video visibility, deadline or form submission.

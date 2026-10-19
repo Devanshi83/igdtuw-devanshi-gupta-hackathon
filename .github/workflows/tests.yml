@@ -23,7 +23,13 @@ jobs:
           cache: pip
 
       - name: Install dependencies
-        run: python -m pip install -r requirements.txt
+        run: python -m pip install -r requirements-dev.txt
 
       - name: Run tests
         run: python -m pytest -q
+
+      - name: Reproduce committed demo and market windows offline
+        run: python scripts/reproduce.py
+
+      - name: Check submission package
+        run: python scripts/check_submission.py

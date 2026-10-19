@@ -9,7 +9,7 @@ This document details an isolated historical analysis of real market responses t
 - **Data Source**: Historical daily adjusted prices retrieved via the `yfinance` library.
 - **Window Definition**: We calculate the window return from $T-1$ to $T+5$ (where $T=0$ is the event date). 
 - **Return Formula**: `(Price_end - Price_start) / Price_start`
-- **Missing Data Handling**: The implementation calculates windows using available trading days (ignoring weekends and holidays). Data is locally cached to `results/market_data/price_cache.csv` to ensure reproducibility without repeated network calls.
+- **Missing Data Handling**: The implementation calculates windows using available trading days (ignoring weekends and holidays). Data is locally cached to `data/market_data/price_cache.csv` to ensure reproducibility without repeated network calls.
 - **Benchmark**: The SPDR S&P 500 ETF Trust (`SPY`) is used as a baseline benchmark.
 
 ## Analyzed Events
@@ -56,10 +56,16 @@ To replicate this analysis offline (using the cached dataset) or online:
 python -m pip install -r requirements.txt
 
 # Run the analysis script
-python scripts/market_data/analyze_events.py
+python scripts/reproduce.py
 ```
 
 Automated tests for the return calculations can be run via:
 ```sh
 pytest tests/test_market_analysis.py -q
 ```
+
+## Current verification and limits
+
+All three cached windows reproduced on 19 October 2026. The calculator now rejects incomplete T+5 windows instead of silently using the last available date. Offline reproduction checks matching target/benchmark dates. Online refresh is optional: install requirements-research.txt and run scripts/market_data/analyze_events.py. The retained cache is reported as adjusted close by the prior research artifacts; it cannot independently authenticate its vendor origin.
+
+XLF is a broad US financial-sector ETF, not Credit Suisse stock. SPY is a broad comparator, not a causal control. Different exposures, currency effects, preselection and concurrent news limit attribution. The UK mini-budget is a fiscal-policy event. Excess returns use unrounded inputs; UK excess is −0.9620 percentage points, rounded to −0.96.
