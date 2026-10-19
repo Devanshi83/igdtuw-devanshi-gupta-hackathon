@@ -6,7 +6,7 @@
 
 **College / Campus:** Indira Gandhi Delhi Technical University for Women (IGDTUW)
 
-**Demo Video Link:** Not uploaded yet — submission remains incomplete until an accessible unlisted YouTube link is added.
+**Demo Video Link:** [Watch Demo on YouTube (Unlisted)](https://youtu.be/kTi4sYZG4mY)
 
 **Slide Deck Link:** [Seven-slide PDF](docs/presentation.pdf) · [Editable PowerPoint](docs/presentation.pptx)
 
@@ -132,12 +132,13 @@ Next experiments: compare a contextual NLP model on a frozen holdout, calibrate 
 
 This is an individual submission. AI assistance supported code, tests, documentation and presentation preparation. The candidate is responsible for understanding and explaining the implementation and assumptions. No confidential S&P Global or CRISIL data is used.
 
-## 7. Submission & Pitch Materials
+## 7. Submission & Project Materials
 
-- [Seven-slide PDF](docs/presentation.pdf) and [editable deck](docs/presentation.pptx)
-- [Timed demo recording script](docs/demo_script.md)
-- [Jury Q&A preparation](docs/jury_qa.md)
-- [Submission checklist](docs/submission_checklist.md)
-- [Validation record](docs/validation.md)
+- **Demo Video:** [YouTube Video Walkthrough (Unlisted)](https://youtu.be/kTi4sYZG4mY)
+- **Slide Deck:** [Seven-slide PDF](docs/presentation.pdf) · [Editable PowerPoint](docs/presentation.pptx)
+- **Architecture & System Design:** [`docs/architecture.png`](docs/architecture.png)
+- **Methodology & Assumptions:** [Methodology Guide](docs/methodology.md)
+- **Empirical Validation Record:** [Validation Report](docs/validation.md)
+- **Financial PhraseBank Benchmark:** [Sentiment Evaluation](docs/real_data_evaluation.md)
+- **Historical Event Analysis:** [Market Data Analysis](docs/market_data_analysis.md)
 
-**Still required:** record and upload the demo to YouTube as Unlisted, verify playback while logged out, add its link above, confirm the deadline/original case brief, and submit the links through the official form. `python scripts/check_submission.py --strict` deliberately fails until the demo URL is present. Local checks cannot certify video visibility, deadline or form submission.

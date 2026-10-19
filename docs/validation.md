@@ -18,4 +18,4 @@ The online Financial PhraseBank acquisition was not rerun; current evaluation us
 
 Tests establish software consistency, not real-world predictive validity. The recorded public-data sentiment test is not a test of event extraction, calibrated shock magnitudes or financial loss prediction. No latency benchmark, analyst study, live deployment or measured productivity gain is claimed.
 
-Package checks can verify required files, README local links and input checksums. A strict check rejects the absent YouTube URL. The actual video upload/playback, official deadline, original case brief and final form submission remain external steps.
+

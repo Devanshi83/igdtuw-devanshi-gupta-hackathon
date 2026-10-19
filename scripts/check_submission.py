@@ -38,11 +38,9 @@ def check(strict=False):
             errors.append('Sentiment metrics do not match the current analyzer source; rerun evaluation')
     video=bool(re.search(r'https://(?:www\.)?(?:youtube\.com/watch\?v=|youtu\.be/)[\w-]+', readme))
     if not video:
-        print('ACTION REQUIRED: record/upload an unlisted YouTube demo and add its URL to README.')
-        if strict: errors.append('Required demo video URL missing')
-    print('MANUAL CHECKS: original case alignment, official deadline, public playback, final form submission.')
+        errors.append('Required demo video URL missing in README.md')
     for error in errors: print('FAIL:',error)
-    if not errors: print('Local package checks passed.' + (' External/manual checks remain.' if strict else ' This does not certify submission readiness.'))
+    if not errors: print('All package integrity and repository checks passed successfully.')
     return 1 if errors else 0
 
 if __name__=='__main__':
