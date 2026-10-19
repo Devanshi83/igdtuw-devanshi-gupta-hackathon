@@ -4,7 +4,6 @@ from datetime import datetime, timedelta
 from pathlib import Path
 
 import pandas as pd
-import yfinance as yf
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -12,7 +11,7 @@ logger = logging.getLogger(__name__)
 ROOT = Path(__file__).resolve().parents[2]
 RESULTS_DIR = ROOT / "results" / "market_data"
 RESULTS_DIR.mkdir(parents=True, exist_ok=True)
-CACHE_FILE = RESULTS_DIR / "price_cache.csv"
+CACHE_FILE = ROOT / "data" / "market_data" / "price_cache.csv"
 
 EVENTS = [
     {
@@ -76,7 +75,8 @@ def get_historical_data(ticker, start_date, end_date, cache_df):
     # Fetch from yfinance if not in cache or insufficient range
     logger.info(f"Fetching {ticker} from {start_date} to {end_date} via yfinance...")
     try:
-        data = yf.download(ticker, start=start_date, end=end_date, progress=False)
+        import yfinance as yf
+        data = yf.download(ticker, start=start_date, end=end_date, progress=False, auto_adjust=True)
         if data.empty:
             logger.warning(f"No data found for {ticker}")
             return pd.DataFrame(columns=["Date", "Ticker", "Close"])
@@ -115,6 +115,10 @@ def calculate_window_return(data_df, target_date_str, window_days=5):
     if data_df.empty:
         return None
         
+    if not isinstance(window_days, int) or isinstance(window_days, bool) or window_days < 0:
+        raise ValueError("window_days must be a non-negative integer")
+    if data_df["Date"].duplicated().any():
+        raise ValueError("Duplicate trading dates")
     data_df = data_df.sort_values("Date").reset_index(drop=True)
     target_date = pd.to_datetime(target_date_str)
     
@@ -134,12 +138,12 @@ def calculate_window_return(data_df, target_date_str, window_days=5):
     # T+window is window_days after T=0
     t_plus_window_idx = t0_idx + window_days
     if t_plus_window_idx >= len(data_df):
-        t_plus_window_idx = len(data_df) - 1 # Take the last available if not enough
+        return None  # Never label a partial window as T+5.
         
     price_start = float(data_df.iloc[t_minus_1_idx]["Close"])
     price_end = float(data_df.iloc[t_plus_window_idx]["Close"])
     
-    if price_start == 0:
+    if not all(pd.notna(v) and 0 < v < float("inf") for v in [price_start, price_end]):
         return None
         
     ret = (price_end - price_start) / price_start

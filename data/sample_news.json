@@ -10,5 +10,29 @@
     "source": "synthetic_news",
     "company": "Example Bank Ltd",
     "text": "Example Bank Ltd reported a major debt default and liquidity concerns."
+  },
+  {
+    "id": "NEWS-003",
+    "source": "synthetic_news",
+    "company": "Example Bank Ltd",
+    "text": "Inflation rises and an interest rate increase raises recession concerns."
+  },
+  {
+    "id": "NEWS-004",
+    "source": "synthetic_news",
+    "company": "Example Technology Ltd",
+    "text": "Example Technology Ltd announces an acquisition after strong profit growth."
+  },
+  {
+    "id": "NEWS-005",
+    "source": "synthetic_news",
+    "company": "Example Bank Ltd",
+    "text": "Example Bank Ltd denies default rumors and reports no liquidity crisis."
+  },
+  {
+    "id": "NEWS-006",
+    "source": "synthetic_news",
+    "company": "Example Bank Ltd",
+    "text": "New sanctions intensify conflict as Example Bank Ltd faces a debt default."
   }
 ]

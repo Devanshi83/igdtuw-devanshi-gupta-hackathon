@@ -15,3 +15,6 @@ data/outputs/
 #   python scripts/evaluation/evaluate_sentiment.py
 results/real_data/predictions.csv
 results/real_data/misclassifications_sample.csv
+
+.build/
+node_modules/

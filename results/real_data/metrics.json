@@ -2,8 +2,8 @@
   "dataset_version": "financial_phrasebank",
   "configuration": "sentences_75agree",
   "record_count": 3453,
-  "accuracy": 0.6730379380249059,
-  "macro_f1": 0.43137136991553254,
+  "accuracy": 0.6733275412684622,
+  "macro_f1": 0.4318676586237995,
   "classification_report": {
     "negative": {
       "precision": 0.45977011494252873,
@@ -12,28 +12,28 @@
       "support": 420.0
     },
     "neutral": {
-      "precision": 0.6928976325441814,
+      "precision": 0.6931287525016678,
       "recall": 0.9683131407269339,
-      "f1-score": 0.8077745383867833,
+      "f1-score": 0.8079315707620529,
       "support": 2146.0
     },
     "positive": {
-      "precision": 0.5613079019073569,
-      "recall": 0.2322435174746336,
-      "f1-score": 0.32854864433811803,
+      "precision": 0.5625,
+      "recall": 0.23337091319052988,
+      "f1-score": 0.3298804780876494,
       "support": 887.0
     },
-    "accuracy": 0.6730379380249059,
+    "accuracy": 0.6733275412684622,
     "macro avg": {
-      "precision": 0.571325216464689,
-      "recall": 0.4319315844798876,
-      "f1-score": 0.43137136991553254,
+      "precision": 0.5717996224813988,
+      "recall": 0.43230738305185307,
+      "f1-score": 0.4318676586237995,
       "support": 3453.0
     },
     "weighted avg": {
-      "precision": 0.630739031771648,
-      "recall": 0.6730379380249059,
-      "f1-score": 0.6056122201723314,
+      "precision": 0.6311888940470435,
+      "recall": 0.6733275412684622,
+      "f1-score": 0.6060519328897257,
       "support": 3453.0
     }
   },
@@ -56,9 +56,22 @@
       ],
       [
         39,
-        642,
-        206
+        641,
+        207
       ]
     ]
+  },
+  "majority_baseline": {
+    "label": "neutral",
+    "accuracy": 0.6214885606718795,
+    "macro_f1": 0.255521819372507
+  },
+  "provenance": {
+    "evaluation_date": "2026-10-19",
+    "model_version": "keyword-v1-evidence-v2",
+    "analyzer_sha256": "ac2309e2c15cf05ecb091ae98d8d1d6924ac1ff7074196564897b8d0718ce714",
+    "input_sha256": "d5ffab7b568f31a66b76cca9e2e6598977e626436fd7e6f19e189ae2615947d3",
+    "source": "Local retained Financial PhraseBank labelled evaluation input",
+    "scope": "Sentiment only. No training or label-driven tuning."
   }
 }

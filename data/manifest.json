@@ -1,0 +1,25 @@
+{
+  "description": "Committed input integrity manifest; see data/README.md for provenance and licensing.",
+  "files": [
+    {
+      "path": "data/market_data/price_cache.csv",
+      "sha256": "cb5653ddc3a9a980063344db6d2bad36c51947c93959be3effdaea24e94570e5"
+    },
+    {
+      "path": "data/sample_news.json",
+      "sha256": "455d586f1d54c7a1c13428ead1a46f66ad1c04611b2ee50ef1b54b15d5116b7f"
+    },
+    {
+      "path": "data/sample_social_posts.json",
+      "sha256": "17198f8426a68331f19af1dedcd3d329155f4719e7e81712257db43a6afb67f9"
+    },
+    {
+      "path": "data/scenarios.json",
+      "sha256": "13549594ebee216dde2fa9c0a67146e61fe6fc6e77c669cd0fd29ac7c9c89863"
+    },
+    {
+      "path": "data/synthetic_portfolio.csv",
+      "sha256": "b561c4cf56a0da8ff59f80e06fd5c0c6a4aeadc6fc392bb83879c5aa5eedf82f"
+    }
+  ]
+}

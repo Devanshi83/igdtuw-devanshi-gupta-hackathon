@@ -80,12 +80,20 @@ def stress_portfolio(portfolio, event, impact, target_company=None):
     if not 1 <= impact <= 10:
         raise ValueError("Impact must be between 1 and 10")
 
+    if not isinstance(portfolio, pd.DataFrame) or portfolio.empty:
+        raise ValueError("Portfolio must be a non-empty table")
+    if not portfolio.columns.is_unique:
+        raise ValueError("Portfolio columns must be unique")
     required = {"asset_type", "market_value"}
     if not required.issubset(portfolio.columns):
         raise ValueError(
             f"Portfolio must contain columns: {sorted(required)}"
         )
 
+    if pd.api.types.is_bool_dtype(portfolio["market_value"]):
+        raise ValueError("Market values must be numeric amounts, not booleans")
+    if portfolio["asset_type"].isna().any():
+        raise ValueError("Asset types cannot be missing")
     if portfolio["market_value"].isna().any():
         raise ValueError("Market values cannot be missing")
 
@@ -111,6 +119,9 @@ def stress_portfolio(portfolio, event, impact, target_company=None):
     scope = scenario["scope"]
     shocks = scenario["shocks"]
 
+    unknown_types = set(portfolio["asset_type"]) - set(shocks)
+    if unknown_types:
+        raise ValueError(f"No configured shock for asset types: {sorted(map(str, unknown_types))}")
     result = portfolio.copy()
 
     if scope == "issuer":
@@ -124,6 +135,8 @@ def stress_portfolio(portfolio, event, impact, target_company=None):
                 "Issuer-scoped scenarios require an issuer column"
             )
 
+        if result["issuer"].isna().any() or result["issuer"].astype(str).str.strip().eq("").any():
+            raise ValueError("Issuer names cannot be missing for issuer scenarios")
         result["affected"] = (
             result["issuer"].astype(str).str.strip().str.casefold()
             == target_company.strip().casefold()
@@ -141,6 +154,7 @@ def stress_portfolio(portfolio, event, impact, target_company=None):
         * result["affected"].astype(float)
     )
 
+    result["shocked"] = result["affected"] & result["shock_pct"].ne(0)
     result["value_after"] = (
         result["market_value"] * (1 + result["shock_pct"])
     )
