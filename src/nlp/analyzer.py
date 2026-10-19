@@ -1,5 +1,7 @@
+import re
+
 EVENT_RULES = {
-    "Geopolitical": ["war", "sanction", "invasion", "conflict"],
+    "Geopolitical": ["war", r"sanctions?", "invasion", "conflict"],
     "Macroeconomic": ["inflation", "interest rate", "recession", "gdp"],
     "Credit Event": ["default", "liquidity", "bankruptcy", "downgrade"],
     "Merger/Acquisition": ["merger", "acquisition", "takeover", "buyout"],
@@ -34,18 +36,21 @@ def analyze_text(text):
     if not isinstance(text, str):
         raise TypeError("text must be a string")
 
-    normalized = text.lower()
-    words = normalized.replace(",", " ").replace(".", " ").split()
+    normalized = text.casefold()
+    words = re.findall(r"\b[\w']+\b", normalized)
 
-    positive = sum(word.strip("!?;:") in POSITIVE for word in words)
-    negative = sum(word.strip("!?;:") in NEGATIVE for word in words)
+    positive = sum(word in POSITIVE for word in words)
+    negative = sum(word in NEGATIVE for word in words)
 
     total = positive + negative
     sentiment = (positive - negative) / total if total else 0.0
 
     event = "Other"
     for category, keywords in EVENT_RULES.items():
-        if any(keyword in normalized for keyword in keywords):
+        if any(
+            re.search(rf"\b{keyword.casefold()}\b", normalized)
+            for keyword in keywords
+        ):
             event = category
             break
 

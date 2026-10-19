@@ -10,3 +10,8 @@ __pycache__/
 .streamlit/secrets.toml
 *.log
 data/outputs/
+
+# Financial PhraseBank raw text (CC BY-NC-SA 3.0) — regenerate with:
+#   python scripts/evaluation/evaluate_sentiment.py
+results/real_data/predictions.csv
+results/real_data/misclassifications_sample.csv

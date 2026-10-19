@@ -1,0 +1,64 @@
+{
+  "dataset_version": "financial_phrasebank",
+  "configuration": "sentences_75agree",
+  "record_count": 3453,
+  "accuracy": 0.6730379380249059,
+  "macro_f1": 0.43137136991553254,
+  "classification_report": {
+    "negative": {
+      "precision": 0.45977011494252873,
+      "recall": 0.09523809523809523,
+      "f1-score": 0.15779092702169625,
+      "support": 420.0
+    },
+    "neutral": {
+      "precision": 0.6928976325441814,
+      "recall": 0.9683131407269339,
+      "f1-score": 0.8077745383867833,
+      "support": 2146.0
+    },
+    "positive": {
+      "precision": 0.5613079019073569,
+      "recall": 0.2322435174746336,
+      "f1-score": 0.32854864433811803,
+      "support": 887.0
+    },
+    "accuracy": 0.6730379380249059,
+    "macro avg": {
+      "precision": 0.571325216464689,
+      "recall": 0.4319315844798876,
+      "f1-score": 0.43137136991553254,
+      "support": 3453.0
+    },
+    "weighted avg": {
+      "precision": 0.630739031771648,
+      "recall": 0.6730379380249059,
+      "f1-score": 0.6056122201723314,
+      "support": 3453.0
+    }
+  },
+  "confusion_matrix": {
+    "labels": [
+      "negative",
+      "neutral",
+      "positive"
+    ],
+    "matrix": [
+      [
+        40,
+        279,
+        101
+      ],
+      [
+        8,
+        2078,
+        60
+      ],
+      [
+        39,
+        642,
+        206
+      ]
+    ]
+  }
+}
